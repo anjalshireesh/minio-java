@@ -3263,12 +3263,14 @@ public class MinioClient {
    * @throws RegionConflictException thrown to indicate passed region conflict with default region.
    * @throws XmlParserException thrown to indicate XML parsing error.
    */
+  @Deprecated
   public void makeBucket(String bucketName)
       throws ErrorResponseException, IllegalArgumentException, InsufficientDataException,
           InternalException, InvalidBucketNameException, InvalidKeyException,
           InvalidResponseException, IOException, NoSuchAlgorithmException, RegionConflictException,
           XmlParserException {
-    this.makeBucket(bucketName, null, false);
+
+    this.makeBucket(MakeBucketArgs.newBuilder().bucket(bucketName).build());
   }
 
   /**
@@ -3293,12 +3295,29 @@ public class MinioClient {
    * @throws RegionConflictException thrown to indicate passed region conflict with default region.
    * @throws XmlParserException thrown to indicate XML parsing error.
    */
+  @Deprecated
   public void makeBucket(String bucketName, String region)
       throws ErrorResponseException, IllegalArgumentException, InsufficientDataException,
           InternalException, InvalidBucketNameException, InvalidKeyException,
           InvalidResponseException, IOException, NoSuchAlgorithmException, RegionConflictException,
           XmlParserException {
-    this.makeBucket(bucketName, region, false);
+
+    // Create bucket with default region.
+    this.makeBucket(MakeBucketArgs.newBuilder().bucket("my-bucketname").build());
+
+    // Create bucket with specific region.
+    this.makeBucket(
+        MakeBucketArgs.newBuilder().bucket("my-bucketname").region("us-east-1").build());
+
+    // Create object-lock enabled bucket with specific region.
+    this.makeBucket(
+        MakeBucketArgs.newBuilder()
+            .bucket("my-bucketname")
+            .region("us-east-1")
+            .objectLock(true)
+            .build());
+
+    this.makeBucket(MakeBucketArgs.newBuilder().bucket(bucketName).region(region).build());
   }
 
   /**
@@ -3324,13 +3343,55 @@ public class MinioClient {
    * @throws RegionConflictException thrown to indicate passed region conflict with default region.
    * @throws XmlParserException thrown to indicate XML parsing error.
    */
+  @Deprecated
   public void makeBucket(String bucketName, String region, boolean objectLock)
       throws ErrorResponseException, IllegalArgumentException, InsufficientDataException,
           InternalException, InvalidBucketNameException, InvalidKeyException,
           InvalidResponseException, IOException, NoSuchAlgorithmException, RegionConflictException,
           XmlParserException {
-    // If region param is not provided, set it with the one provided by constructor
-    if (region == null) {
+
+    this.makeBucket(
+        MakeBucketArgs.newBuilder()
+            .bucket(bucketName)
+            .region(region)
+            .objectLock(objectLock)
+            .build());
+  }
+
+  /**
+   * Creates a bucket with make bucket arguments.
+   *
+   * <pre>Example:{@code
+   * minioClient.makeBucket(MakeBucketArgs args);
+   * }</pre>
+   *
+   * @param args Object with bucket name, region and lock functionality
+   * @throws ErrorResponseException thrown to indicate S3 service returned an error response.
+   * @throws IllegalArgumentException throws to indicate invalid argument passed.
+   * @throws InsufficientDataException thrown to indicate not enough data available in InputStream.
+   * @throws InternalException thrown to indicate internal library error.
+   * @throws InvalidBucketNameException thrown to indicate invalid bucket name passed.
+   * @throws InvalidKeyException thrown to indicate missing of HMAC SHA-256 library.
+   * @throws InvalidResponseException thrown to indicate S3 service returned invalid or no error
+   *     response.
+   * @throws IOException thrown to indicate I/O error on S3 operation.
+   * @throws NoSuchAlgorithmException thrown to indicate missing of MD5 or SHA-256 digest library.
+   * @throws RegionConflictException thrown to indicate passed region conflict with default region.
+   * @throws XmlParserException thrown to indicate XML parsing error.
+   */
+  public void makeBucket(MakeBucketArgs args)
+      throws InvalidBucketNameException, RegionConflictException, InsufficientDataException,
+          InternalException, InvalidResponseException, InvalidKeyException,
+          NoSuchAlgorithmException, XmlParserException, ErrorResponseException, IOException {
+
+    if (args == null) {
+      throw new IllegalArgumentException("null value is not allowed in arguments");
+    }
+
+    String region = US_EAST_1;
+    if (args.region() != null && !args.region().isEmpty()) {
+      region = args.region();
+    } else if (this.region != null && !this.region.isEmpty()) {
       region = this.region;
     }
 
@@ -3340,22 +3401,18 @@ public class MinioClient {
           "passed region conflicts with the one previously specified");
     }
 
-    if (region == null) {
-      region = US_EAST_1;
-    }
-
     CreateBucketConfiguration config = null;
     if (!region.equals(US_EAST_1)) {
       config = new CreateBucketConfiguration(region);
     }
 
     Map<String, String> headerMap = null;
-    if (objectLock) {
+    if (args.objectLock()) {
       headerMap = new HashMap<>();
       headerMap.put("x-amz-bucket-object-lock-enabled", "true");
     }
 
-    Response response = executePut(bucketName, null, region, headerMap, null, config, 0);
+    Response response = executePut(args.name(), null, region, headerMap, null, config, 0);
     response.body().close();
   }
 
@@ -3383,13 +3440,7 @@ public class MinioClient {
       throws ErrorResponseException, IllegalArgumentException, InsufficientDataException,
           InternalException, InvalidBucketNameException, InvalidKeyException,
           InvalidResponseException, IOException, NoSuchAlgorithmException, XmlParserException {
-    Map<String, String> queryParamMap = new HashMap<>();
-    queryParamMap.put("versioning", "");
-    String config =
-        "<VersioningConfiguration xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\">"
-            + "<Status>Enabled</Status></VersioningConfiguration>";
-    Response response = executePut(bucketName, null, null, queryParamMap, config, 0);
-    response.body().close();
+    versioning(VersionBucketArgs.newBuilder().bucket(bucketName).bucketVersion(true).build());
   }
 
   /**
@@ -3416,12 +3467,46 @@ public class MinioClient {
       throws ErrorResponseException, IllegalArgumentException, InsufficientDataException,
           InternalException, InvalidBucketNameException, InvalidKeyException,
           InvalidResponseException, IOException, NoSuchAlgorithmException, XmlParserException {
+    versioning(VersionBucketArgs.newBuilder().bucket(bucketName).bucketVersion(false).build());
+  }
+
+  /**
+   * Enables object versioning feature in a bucket.
+   *
+   * <pre>Example:{@code
+   * minioClient.versioning("VersionBucketArgs args);
+   * }</pre>
+   *
+   * @param args Arguments for bucket versioning.
+   * @throws ErrorResponseException thrown to indicate S3 service returned an error response.
+   * @throws IllegalArgumentException throws to indicate invalid argument passed.
+   * @throws InsufficientDataException thrown to indicate not enough data available in InputStream.
+   * @throws InternalException thrown to indicate internal library error.
+   * @throws InvalidBucketNameException thrown to indicate invalid bucket name passed.
+   * @throws InvalidKeyException thrown to indicate missing of HMAC SHA-256 library.
+   * @throws InvalidResponseException thrown to indicate S3 service returned invalid or no error
+   *     response.
+   * @throws IOException thrown to indicate I/O error on S3 operation.
+   * @throws NoSuchAlgorithmException thrown to indicate missing of MD5 or SHA-256 digest library.
+   * @throws XmlParserException thrown to indicate XML parsing error.
+   */
+  public void versioning(VersionBucketArgs args)
+      throws ErrorResponseException, IllegalArgumentException, InsufficientDataException,
+          InternalException, InvalidBucketNameException, InvalidKeyException,
+          InvalidResponseException, IOException, NoSuchAlgorithmException, XmlParserException {
     Map<String, String> queryParamMap = new HashMap<>();
     queryParamMap.put("versioning", "");
+
+    String status = "Suspended";
+    if (args.bucketVersion()) {
+      status = "Enabled";
+    }
     String config =
         "<VersioningConfiguration xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\">"
-            + "<Status>Suspended</Status></VersioningConfiguration>";
-    Response response = executePut(bucketName, null, null, queryParamMap, config, 0);
+            + "<Status>"
+            + status
+            + "</Status></VersioningConfiguration>";
+    Response response = executePut(args.name(), null, null, queryParamMap, config, 0);
     response.body().close();
   }
 

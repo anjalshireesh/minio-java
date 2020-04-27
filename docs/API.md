@@ -330,6 +330,28 @@ __Example__
 minioClient.enableVersioning("my-bucketname");
 ```
 
+### versioning(VersionBucketArgs args)
+`public void versioning(VersionBucketArgs args)` _[[Javadoc]](http://minio.github.io/minio-java/io/minio/MinioClient.html#versioning-io.minio-VersionBucketArgs-)_
+
+Enables/Disables  object versioning feature in a bucket.
+
+__Parameters__
+
+| Parameter      | Type     | Description         |
+|:---------------|:---------|:--------------------|
+| ``args`` | _[VersionBucketArgs]_ | Name of the bucket. |
+
+__Example__
+```java
+ // Enable bucket versioning
+minioClient.versioning(
+    VersionBucketArgs.newBuilder().bucket(bucketName).bucketVersion(true).build());
+
+// Disable bucket versioning
+minioClient.versioning(
+    VersionBucketArgs.newBuilder().bucket(bucketName).bucketVersion(false).build());
+```
+
 <a name="getBucketLifeCycle"></a>
 ### getBucketLifeCycle(String bucketName)
 `public String getBucketLifeCycle(String bucketName)` _[[Javadoc]](http://minio.github.io/minio-java/io/minio/MinioClient.html#getBucketLifeCycle-java.lang.String-)_
@@ -646,55 +668,34 @@ for (Result<Item> result : results) {
 ```
 
 <a name="makeBucket"></a>
-### makeBucket(String bucketName)
-`public void makeBucket(String bucketName)` _[[Javadoc]](http://minio.github.io/minio-java/io/minio/MinioClient.html#makeBucket-java.lang.String-)_
+### makeBucket(MakeBucketArgs args)
+`public void makeBucket(MakeBucketArgs args)` _[[Javadoc]](http://minio.github.io/minio-java/io/minio/MinioClient.html#makeBucket-io.minio.MakeBucketArgs-)_
 
-Creates a bucket with default region.
+Creates a bucket with given region and object lock feature enabled.
 
 __Parameters__
-| Parameter      | Type     | Description         |
-|:---------------|:---------|:--------------------|
-| ``bucketName`` | _String_ | Name of the bucket. |
+| Parameter      | Type             | Description                |
+|:---------------|:-----------------|:---------------------------|
+| ``args``       | _[MakeBucketArgs]_ | Arguments to create bucket |
 
 __Example__
 ```java
-minioClient.makeBucket("my-bucketname");
+// Create bucket with default region.
+minioClient.makeBucket(MakeBucketArgs.newBuilder().bucket("my-bucketname").build());
+
+// Create bucket with specific region.
+minioClient.makeBucket(
+    MakeBucketArgs.newBuilder().bucket("my-bucketname").region("us-west-1").build());
+
+// Create object-lock enabled bucket with specific region.
+minioClient.makeBucket(
+    MakeBucketArgs.newBuilder()
+        .bucket("my-bucketname")
+        .region("us-west-1")
+        .objectLock(true)
+        .build());
 ```
 
-<a name="makeBucket"></a>
-### makeBucket(String bucketName, String region)
-`public void makeBucket(String bucketName, String region)` _[[Javadoc]](http://minio.github.io/minio-java/io/minio/MinioClient.html#makeBucket-java.lang.String-java.lang.String-)_
-
-Creates a bucket with given region.
-
-__Parameters__
-| Parameter      | Type     | Description                                 |
-|:---------------|:---------|:--------------------------------------------|
-| ``bucketName`` | _String_ | Name of the bucket.                         |
-| ``region``     | _String_ | Region in which the bucket will be created. |
-
-__Example__
-```java
-minioClient.makeBucket("my-bucketname", "eu-west-1");
-```
-
-<a name="makeBucket"></a>
-### makeBucket(String bucketName, String region, boolean objectLock)
-`public void makeBucket(String bucketName, String region, boolean objectLock)` _[[Javadoc]](http://minio.github.io/minio-java/io/minio/MinioClient.html#makeBucket-java.lang.String-java.lang.String-boolean-)_
-
-Creates a bucket with object lock feature enabled.
-
-__Parameters__
-| Parameter      | Type      | Description                                            |
-|:---------------|:----------|:-------------------------------------------------------|
-| ``bucketName`` | _String_  | Name of the bucket.                                    |
-| ``region``     | _String_  | (Optional) Region in which the bucket will be created. |
-| ``objectLock`` | _boolean_ | Flag to enable object lock feature.                    |
-
-__Example__
-```java
-minioClient.makeBucket("my-bucketname", "us-west-2", true);
-```
 
 <a name="removeAllBucketNotification"></a>
 ### removeAllBucketNotification(String bucketName)
