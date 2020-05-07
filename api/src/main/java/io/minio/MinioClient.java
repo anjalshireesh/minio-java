@@ -158,6 +158,9 @@ import okhttp3.ResponseBody;
  * href="https://github.com/minio/minio-java/tree/master/src/test/java/io/minio/examples">here</a>.
  */
 @SuppressWarnings({"SameParameterValue", "WeakerAccess"})
+@SuppressFBWarnings(
+    value = "BC",
+    justification = "Valid casting of subclass instance in BucketArgs.")
 public class MinioClient {
   private static final byte[] EMPTY_BODY = new byte[] {};
   // default network I/O timeout is 15 minutes

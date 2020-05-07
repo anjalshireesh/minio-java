@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectOptions;
@@ -34,6 +35,9 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.ZonedDateTime;
 
+@SuppressFBWarnings(
+    value = "BC",
+    justification = "Valid casting of subclass instance in BucketArgs.")
 public class SetGetObjectLockRetentionConfig {
   /** MinioClient.setObjectRetention() example. MinioClient.getObjectRetention() example. */
   public static void main(String[] args)

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.errors.MinioException;
@@ -24,6 +25,9 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
+@SuppressFBWarnings(
+    value = "BC",
+    justification = "Valid casting of subclass instance in BucketArgs.")
 public class SetGetBucketObjectLockConfig {
   /** Set/Get Bucket Object Lock configuration example. */
   public static void main(String[] args)

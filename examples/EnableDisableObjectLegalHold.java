@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectOptions;
@@ -31,6 +32,9 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
+@SuppressFBWarnings(
+    value = "BC",
+    justification = "Valid casting of subclass instance in BucketArgs.")
 public class EnableDisableObjectLegalHold {
   /**
    * MinioClient.enableObjectLegalHold() example. MinioClient.disableObjectLegalHold() example.

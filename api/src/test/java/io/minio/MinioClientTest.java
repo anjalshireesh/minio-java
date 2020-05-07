@@ -17,6 +17,7 @@
 
 package io.minio;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.minio.errors.InvalidBucketNameException;
 import io.minio.errors.InvalidEndpointException;
 import io.minio.errors.InvalidExpiresRangeException;
@@ -37,7 +38,10 @@ import okio.Buffer;
 import org.junit.Assert;
 import org.junit.Test;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "unchecked"})
+@SuppressFBWarnings(
+    value = "BC",
+    justification = "Valid casting of subclass instance in BucketArgs.")
 public class MinioClientTest {
   private static final String CONTENT_TYPE = "Content-Type";
   private static final String CONTENT_LENGTH = "Content-Length";

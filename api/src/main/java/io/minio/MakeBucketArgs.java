@@ -28,22 +28,12 @@ public final class MakeBucketArgs extends BucketArgs {
     return objectLock;
   }
 
-  public static Builder builder() {
-    return new Builder();
+  public static MakeBucketArgs.Builder builder() {
+    return new MakeBucketArgs.Builder();
   }
 
-  public static final class Builder extends BucketArgs.Builder {
+  public static final class Builder extends BucketArgs.Builder<Builder> {
     private boolean objectLock;
-
-    public Builder bucket(String name) {
-      this.name = name;
-      return this;
-    }
-
-    public Builder region(String region) {
-      this.region = region;
-      return this;
-    }
 
     public Builder objectLock(boolean objectLock) {
       this.objectLock = objectLock;

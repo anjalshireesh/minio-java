@@ -41,8 +41,9 @@ import okio.BufferedSink;
 import okio.Okio;
 
 @SuppressFBWarnings(
-    value = "REC",
-    justification = "Allow catching super class Exception since it's tests")
+    value = {"REC", "BC"},
+    justification =
+        "Allow catching super class Exception since it's tests, Valid casting of subclass instance in BucketArgs.")
 public class FunctionalTest {
   private static final String OS = System.getProperty("os.name").toLowerCase(Locale.US);
   private static final String MINIO_BINARY;
@@ -398,6 +399,9 @@ public class FunctionalTest {
   }
 
   /** Tear down test setup. */
+  @SuppressFBWarnings(
+      value = "BC",
+      justification = "Valid casting of subclass instance in BucketArgs.")
   public static void setup() throws Exception {
     client.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
   }
