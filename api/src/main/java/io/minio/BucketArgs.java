@@ -16,11 +16,9 @@
 
 package io.minio;
 
-public class BucketArgs {
-  public String name;
-  public String region;
-
-  public BucketArgs() {}
+public abstract class BucketArgs {
+  private String name;
+  private String region;
 
   public String name() {
     return name;
@@ -30,18 +28,18 @@ public class BucketArgs {
     return region;
   }
 
-  BucketArgs(BucketArgsBuilder builder) {
+  BucketArgs(Builder builder) {
     this.name = builder.name;
     this.region = builder.region;
   }
 
-  public static class BucketArgsBuilder {
+  public static class Builder {
     public String name;
     public String region;
 
-    public BucketArgsBuilder name(String name) {
-      if (name == null) {
-        throw new IllegalArgumentException("null bucket name");
+    public Builder name(String name) {
+      if (name == null || name.isEmpty()) {
+        throw new IllegalArgumentException("null or empty bucket name");
       }
 
       // Bucket names cannot be no less than 3 and no more than 63 characters long.
@@ -67,16 +65,9 @@ public class BucketArgs {
       return this;
     }
 
-    public BucketArgsBuilder region(String region) {
+    public Builder region(String region) {
       this.region = region;
       return this;
-    }
-
-    public BucketArgs build() throws IllegalArgumentException {
-      if (this.name == null || this.name.isEmpty()) {
-        throw new IllegalArgumentException("name is null or empty");
-      }
-      return new BucketArgs(this);
     }
   }
 }

@@ -20,8 +20,7 @@ public final class VersionBucketArgs extends BucketArgs {
   private final boolean bucketVersion;
 
   VersionBucketArgs(Builder builder) {
-    this.name = builder.name;
-    this.region = builder.region;
+    super(builder);
     this.bucketVersion = builder.bucketVersion;
   }
 
@@ -29,11 +28,11 @@ public final class VersionBucketArgs extends BucketArgs {
     return bucketVersion;
   }
 
-  public static Builder newBuilder() {
+  public static Builder builder() {
     return new Builder();
   }
 
-  public static final class Builder extends BucketArgs.BucketArgsBuilder {
+  public static final class Builder extends BucketArgs.Builder {
     private boolean bucketVersion;
 
     public Builder bucket(String name) {

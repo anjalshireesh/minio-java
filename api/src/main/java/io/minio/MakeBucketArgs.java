@@ -20,8 +20,7 @@ public final class MakeBucketArgs extends BucketArgs {
   private final boolean objectLock;
 
   MakeBucketArgs(Builder builder) {
-    this.name = builder.name;
-    this.region = builder.region;
+    super(builder);
     this.objectLock = builder.objectLock;
   }
 
@@ -29,11 +28,11 @@ public final class MakeBucketArgs extends BucketArgs {
     return objectLock;
   }
 
-  public static Builder newBuilder() {
+  public static Builder builder() {
     return new Builder();
   }
 
-  public static final class Builder extends BucketArgs.BucketArgsBuilder {
+  public static final class Builder extends BucketArgs.Builder {
     private boolean objectLock;
 
     public Builder bucket(String name) {

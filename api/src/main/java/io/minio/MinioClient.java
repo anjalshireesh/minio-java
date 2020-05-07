@@ -3270,7 +3270,7 @@ public class MinioClient {
           InvalidResponseException, IOException, NoSuchAlgorithmException, RegionConflictException,
           XmlParserException {
 
-    this.makeBucket(MakeBucketArgs.newBuilder().bucket(bucketName).build());
+    this.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
   }
 
   /**
@@ -3303,21 +3303,20 @@ public class MinioClient {
           XmlParserException {
 
     // Create bucket with default region.
-    this.makeBucket(MakeBucketArgs.newBuilder().bucket("my-bucketname").build());
+    this.makeBucket(MakeBucketArgs.builder().bucket("my-bucketname").build());
 
     // Create bucket with specific region.
-    this.makeBucket(
-        MakeBucketArgs.newBuilder().bucket("my-bucketname").region("us-east-1").build());
+    this.makeBucket(MakeBucketArgs.builder().bucket("my-bucketname").region("us-east-1").build());
 
     // Create object-lock enabled bucket with specific region.
     this.makeBucket(
-        MakeBucketArgs.newBuilder()
+        MakeBucketArgs.builder()
             .bucket("my-bucketname")
             .region("us-east-1")
             .objectLock(true)
             .build());
 
-    this.makeBucket(MakeBucketArgs.newBuilder().bucket(bucketName).region(region).build());
+    this.makeBucket(MakeBucketArgs.builder().bucket(bucketName).region(region).build());
   }
 
   /**
@@ -3351,11 +3350,7 @@ public class MinioClient {
           XmlParserException {
 
     this.makeBucket(
-        MakeBucketArgs.newBuilder()
-            .bucket(bucketName)
-            .region(region)
-            .objectLock(objectLock)
-            .build());
+        MakeBucketArgs.builder().bucket(bucketName).region(region).objectLock(objectLock).build());
   }
 
   /**
@@ -3440,7 +3435,7 @@ public class MinioClient {
       throws ErrorResponseException, IllegalArgumentException, InsufficientDataException,
           InternalException, InvalidBucketNameException, InvalidKeyException,
           InvalidResponseException, IOException, NoSuchAlgorithmException, XmlParserException {
-    versioning(VersionBucketArgs.newBuilder().bucket(bucketName).bucketVersion(true).build());
+    versioning(VersionBucketArgs.builder().bucket(bucketName).bucketVersion(true).build());
   }
 
   /**
@@ -3467,7 +3462,7 @@ public class MinioClient {
       throws ErrorResponseException, IllegalArgumentException, InsufficientDataException,
           InternalException, InvalidBucketNameException, InvalidKeyException,
           InvalidResponseException, IOException, NoSuchAlgorithmException, XmlParserException {
-    versioning(VersionBucketArgs.newBuilder().bucket(bucketName).bucketVersion(false).build());
+    versioning(VersionBucketArgs.builder().bucket(bucketName).bucketVersion(false).build());
   }
 
   /**
